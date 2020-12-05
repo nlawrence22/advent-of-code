@@ -69,7 +69,11 @@ for index, seat in enumerate(seats):
         continue
     
     #print('seat left ', seats[index - 1], ' seat right ', seats[index + 1])
-    if seats[index - 1] != seat - 1 or seats[index + 1] != seat + 1:
+    if seats[index - 1] != seat - 1:
+        print('Found seat! Id: ', seat - 1)
+        break
+
+    elif seats[index + 1] != seat + 1:
         print('Found seat! Id: ', seat + 1)
         break
 
