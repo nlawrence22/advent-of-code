@@ -1,5 +1,5 @@
 from collections import defaultdict
-from functools import lru_cache
+from functools import cache
 
 def get_input_as_strings(filename):
     lines = None
@@ -20,7 +20,7 @@ def get_input_as_ints(filename):
 
     return new_lines
 
-adapters = get_input_as_ints('test.txt')
+adapters = get_input_as_ints('input.txt')
 adapters.sort()
 # print(adapters)
 
@@ -61,62 +61,38 @@ def get_possible_next_adapters(jolts, adapter_list):
     
     return possiblilites
 
-#jolts = 0
-
-# def get_combinations(total_jolts, adapters):
-#     possible_combos = []
-
-#     combo_jolts = 0
-#     adapters.sort()
-
-#     while total_jolts != combo_jolts:
-
 class Graph:
-
     def __init__(self, vertices):
         self.Vertices = vertices
-
         self.graph = defaultdict(list)
 
     def addEdge(self, u, v):
         self.graph[u].append(v)
 
-    #@lru_cache(maxsize=None)
-    def get_paths(self, curr, destination, visited, path, all_paths):
-        visited[curr] = True
-        path.append(curr)
-
+    @cache
+    def get_paths(self, curr, destination):
+        count = 0
         if curr == destination:
-            all_paths.append(path.copy())
+            return 1
         else:
             for i in self.graph[curr]:
-                if visited[i] == False:
-                    self.get_paths(i, destination, visited, path, all_paths)
-        
-        path.pop()
-        visited[curr] = False
-    
+                count += self.get_paths(i, destination)
+        return count
 
     def get_all_paths(self, start, destination):
-        visited = {}
-        for vertice in self.Vertices:
-            visited[vertice] = False
-        path = []
-        all_paths = []
 
-        self.get_paths(start, destination, visited, path, all_paths)
-        return all_paths
+        return self.get_paths(start, destination)
+        #return self.count
 
 
 path_graph = Graph(adapters)
+print('graph built')
 
 jolts = 0
 # print('adapters', adapters)
 remaining_adapters = adapters.copy()
 remaining_adapters.sort()
 for adapter in adapters:
-    # print('building graph for adapter', adapter)
-    # print('remaining', remaining_adapters)
     possibilites = get_possible_next_adapters(jolts, remaining_adapters)
     # print('possible next adapters', possibilites)
 
@@ -131,4 +107,4 @@ for adapter in adapters:
 the_answer = path_graph.get_all_paths(0, total_jolts)
 # for pt in the_answer:
 #     print(pt)
-print(len(the_answer))
+print(the_answer)
